@@ -1,0 +1,27 @@
+{
+  "name": "kommunefyp",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Potatomochi/KommuneFYP.git"
+  },
+  "author": "S. Noah Ryan, A. Janzeer, E. Sophia, S. Amanda, L. Celeste, Belle",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Potatomochi/KommuneFYP/issues"
+  },
+  "homepage": "https://github.com/Potatomochi/KommuneFYP#readme",
+  "dependencies": {
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "firebase": "^9.15.0",
+    "firebase-admin": "^11.4.0",
+    "nodemon": "^2.0.20"
+  }
+}
