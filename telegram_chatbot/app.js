@@ -98,6 +98,10 @@ bot.onText(/\/booking/, function (message) {
                      }
                  })
             }
+            else{
+                cancelFlow()
+                console.log("cancelled")
+            }
 ;
          }
      });
