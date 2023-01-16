@@ -1,28 +1,47 @@
 import { initializeApp, applicationDefault, cert }from 'firebase-admin/app';
 import { getFirestore, Timestamp, FieldValue } from 'firebase-admin/firestore'
-
+import cors from "cors"
+import bodyParser from "body-parser"
+import express from "express";
 initializeApp();
 
-const db = getFirestore();
+const app = express();
+const PORT = 5008
 
-const docRef = db.collection('users').doc('alovelace');
+app.use(cors());
+app.use(express.json())
+app.use(bodyParser.urlencoded({extended: true}))
 
-await docRef.set({
-  first: 'Ada',
-  last: 'Lovelace',
-  born: 1815
+app.get("/", (req,res)=>{
+    console.log("HELLO WORLD")
 });
+app.post("api/postInformation" , (req,res)=>{
+    
+})
+app.listen(PORT, ()=>{
+    console.log(`Server is running on ${PORT}`)
+})
 
-const aTuringRef = db.collection('users').doc('aturing');
+// const db = getFirestore();
 
-await aTuringRef.set({
-  'first': 'Alan',
-  'middle': 'Mathison',
-  'last': 'Turing',
-  'born': 1912
-});
+// const docRef = db.collection('users').doc('alovelace');
 
-const snapshot = await db.collection('users').get();
-snapshot.forEach((doc) => {
-  console.log(doc.id, '=>', doc.data());
-});
+// await docRef.set({
+//   first: 'Ada',
+//   last: 'Lovelace',
+//   born: 1815
+// });
+
+// const aTuringRef = db.collection('users').doc('aturing');
+
+// await aTuringRef.set({
+//   'first': 'Alan',
+//   'middle': 'Mathison',
+//   'last': 'Turing',
+//   'born': 1912
+// });
+
+// const snapshot = await db.collection('users').get();
+// snapshot.forEach((doc) => {
+//   console.log(doc.id, '=>', doc.data());
+// });

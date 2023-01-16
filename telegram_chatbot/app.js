@@ -1,4 +1,7 @@
 
+const dayjs = require('dayjs');
+var customParseFormat = require('dayjs/plugin/customParseFormat')
+dayjs.extend(customParseFormat)
 const dotenv=require('dotenv')
 // require('./booking.js')
 dotenv.config({path:'../.env'});
@@ -27,6 +30,7 @@ module.exports = bot
 //     bot.sendMessage(msg.chat.id, "this is to check");
     
 //     });
+console.log(dayjs('2022-02-02', 'YYYY-MM-DD', true).isValid())
 const triggerWords = ["/booking" , "/help" , "/cancel" , "/test"]
 var answerCallbacks = {};
 const isFlowCancelled = false
@@ -57,7 +61,7 @@ bot.onText(/\/booking/, function (message) {
             if(mobileNumber !== "cancel"){
                 bot.sendMessage(message.chat.id, "Please select an activity you would like to book (Selective options) (Selective options)" , {
                     "reply_markup": {
-                        "keyboard": [["Karaoke"],   ["stuff"], ["Idinahoi"]]
+                        "keyboard": [["Karaoke"],   ["stuff"], ["Gaming"]]
                         }
                     }).then(function () {
                      answerCallbacks[message.chat.id] = function (answer) {
@@ -67,16 +71,18 @@ bot.onText(/\/booking/, function (message) {
                                 answerCallbacks[message.chat.id] = function (answer) {
                                     var people = answer.text;
                                     if(people !== "cancel"){
-                                        bot.sendMessage(message.chat.id, "Can we have the date for booking").then(function (){
+                                        bot.sendMessage(message.chat.id, "Can we have the date for booking? in YYYY-MM-DD format only").then(function (){
                                             answerCallbacks[message.chat.id] = function (answer) {
                                                 var date = answer.text;
                                                 if(date !== "cancel"){
+                                                    const dateCheck = dayjs(date, 'YYYY-MM-DD', true).isValid()
                                                     bot.sendMessage(message.chat.id, "What is the duration of your booking in Kommune?").then(function(){
                                                         answerCallbacks[message.chat.id] = function (answer){
                                                             var duration = answer.text
                                                             if(true){
                                                                 //if weekday
-                                                                bot.sendMessage(message.chat.id , "Great! 😄Your booking is confirmed for <date> at <time> for <duration> hours of <room type> for <pax> pax! Please be reminded to bring $<price> for payment.  Bookings will only be held for a *maximum of 5 minutes*, and will be automatically released if you do not come on time without informing staff. Use /help to learn more.")
+                                                                bot.sendMessage(message.chat.id , `Great! 😄Your booking is confirmed for ${date} at <time> for ${duration} hours of ${option} for ${people} pax! Please be reminded to bring $<price> for payment.  Bookings will only be held for a *maximum of 5 minutes*, and will be automatically released if you do not come on time without informing staff. Use /help to learn more.`)
+                                                                // console.log(option + mobileNumber + people)
                                                                 // const detailsToSend = {option, mobileNumber,people,data,duration}
                                                             }else {
                                                                 //if weekend
@@ -86,22 +92,34 @@ bot.onText(/\/booking/, function (message) {
                                                         }
                                                     })
                                                 }
+                                                else{
+                                                    cancelFlow(message.chat.id)
+                                                    console.log("cancelled")
+                                                }
 
                                             }
                                          })
+                                    }
+                                    else{
+                                        cancelFlow(message.chat.id)
+                                        console.log("cancelled")
                                     }
 ;
                                 }
                             });
                          }
+                         else{
+                            cancelFlow(message.chat.id)
+                            console.log("cancelled")
+                         }
 
                      }
                  })
             }
-            // else{
-            //     cancelFlow()
-            //     console.log("cancelled")
-            // }
+            else{
+                cancelFlow(message.chat.id)
+                console.log("cancelled")
+            }
 ;
          }
      });
@@ -132,14 +150,12 @@ bot.onText(/\/booking/, function (message) {
     bot.clearReplyListeners()
 
  })
- const cancelFlow = async() => {
-    await bot.stopPolling({cancel:true})
-    bot.startPolling().then(
-    bot.sendMessage(message.chat.id,"Welcome to Kommune's Chatbot! Please select an option or type '/booking' to get started. If you need help, do /help ",{
+ const cancelFlow = async(msg) => {
+    bot.sendMessage(msg,"Welcome to Kommune's Chatbot! Please select an option or type '/booking' to get started. If you need help, do /help ",{
         "reply_markup": {
             "keyboard": [["/booking"],   ["/help"], ["/cancel"]]
             }
-        }))
+        })
  }
 
 console.log('working')
